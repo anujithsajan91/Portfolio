@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Redirecting...</title>
+    <script>
+      // Simple redirect for SPA on GitHub Pages
+      const path = window.location.pathname;
+      const isRoot = path === '/' || path === '/Portfolio/' || path === '/Portfolio';
+      
+      if (!isRoot) {
+        // Store the intended path and redirect to index
+        sessionStorage.setItem('redirectPath', path);
+        window.location.href = '/Portfolio/index.html';
+      }
+    </script>
+  </head>
+  <body>
+    <p>Redirecting...</p>
+  </body>
+</html>
