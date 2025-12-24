@@ -1,5 +1,5 @@
 import './App.css';
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import { HashRouter, Routes, Route } from 'react-router-dom';
 import { AnimatePresence, motion } from 'framer-motion';
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
@@ -26,7 +26,7 @@ const RouteWrapper = ({ children }) => (
 
 function App() {
   return (
-    <BrowserRouter>
+    <HashRouter>
       <div className="w-full h-screen relative flex justify-center items-center">
 
         {/* Background */}
@@ -122,7 +122,7 @@ function App() {
           <Footer />
         </div>
       </div>
-    </BrowserRouter>
+    </HashRouter>
   );
 }
 
