@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Link, NavLink } from 'react-router-dom';
 import { FiMenu, FiX, FiDownload } from 'react-icons/fi';
 import logo from "@/assets/images/Logo.png";
+import resumePdf from "@/assets/AnujithSResume.pdf";
 
 const navItems = [
   { label: 'Home', to: '/' },
@@ -20,7 +21,7 @@ export function Navbar() {
   const [open, setOpen] = useState(false);
 
   return (
-    <header className="sticky top-3 z-50 border border-stone-300/40 bg-background/20 backdrop-blur rounded-4xl">
+    <header className="fixed shadow-lg top-3 z-50 border border-stone-300/40 md:bg-gradient-to-b from-black/20 via-white/15 to-black/20 backdrop-blur-xs bg-black/30 rounded-4xl">
       <nav className="mx-auto flex max-w-5xl items-center justify-between px-4 py-3 sm:px-6 gap-3 md:gap-0">
         <Link to="/" className="flex items-center gap-2">
           <img src={logo} alt="" style={{width:'100px'}} />
@@ -43,9 +44,9 @@ export function Navbar() {
             ))}
           </ul>
           <a
-            href="/assets/resume.pdf"
+            href={resumePdf}
             className="flex items-center justify-center gap-1 border border-stone-300/30 rounded-lg p-2 hover:bg-white hover:text-black transition"
-            download
+            download="AnujithSResume.pdf"
           >
             <FiDownload className="h-4 w-4" />
             <span>Resume</span>
@@ -83,9 +84,9 @@ export function Navbar() {
             ))}
           </ul>
           <a
-            href="/assets/resume.pdf"
+            href={resumePdf}
             className="mt-3 flex items-center justify-center gap-2 rounded-md border px-3 py-2 text-sm font-medium text-background shadow-md shadow-accent/40 transition hover:bg-accentSoft"
-            download
+            download="AnujithSResume.pdf"
           >
             <FiDownload className="h-4 w-4" />
             <span>Resume</span>

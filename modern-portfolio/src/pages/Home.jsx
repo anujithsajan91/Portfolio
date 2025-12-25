@@ -139,7 +139,7 @@ export function Home() {
             animate={{ opacity: 1, scale: 1, y: 0 }}
             transition={{ delay: 0.25, duration: 0.5, ease: 'easeOut' }}
           >
-            <div className="bg-indigo-500 relative h-56 w-56 rounded-3xl border border-accentMuted/60 bg-gradient-to-tr from-accentMuted/40 via-backgroundSoft to-background shadow-[0_0_40px_rgba(56,189,248,0.35)] sm:h-64 sm:w-64">
+            <div className="bg-indigo-500 relative h-56 w-56 rounded-3xl border border-accentMuted/60 bg-gradient-to-tr from-accentMuted/40 via-backgroundSoft to-background shadow-[0_0_40px_rgba(56,189,248,0.35)] sm:h-64 sm:w-64 mb-8 md:mb-0">
               <div className="absolute inset-4 rounded-2xl border border-accent/20 bg-black" />
               <div className="absolute inset-0 flex items-center justify-center overflow-hidden">
                 <div className="flex flex-col items-center gap-2 text-center">
