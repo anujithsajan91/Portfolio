@@ -14,11 +14,14 @@
 body {
   @apply antialiased text-white bg-black;
 }
+html {
+  scroll-behavior: smooth;
+}
+
 html,
 body,
 #root {
   height: 100%;
-  overflow: hidden;
 }
 
 

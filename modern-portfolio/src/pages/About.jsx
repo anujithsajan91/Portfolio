@@ -1,8 +1,5 @@
 import { motion } from 'framer-motion';
-import homeImg from "@/assets/images/Anujith_Home.png";
-import { Link } from 'react-router-dom';
-import { skills } from '../data/skills';
-import { SkillCard } from '../components/SkillCard';
+import homeImg from "@/assets/images/Anujith_Home2.png";
 
 const sectionVariants = {
   hidden: { opacity: 0, y: 16 },
@@ -12,33 +9,6 @@ const sectionVariants = {
     transition: { duration: 0.45, ease: 'easeOut' },
   },
 };
-
-const experiences = [
-  {
-    title: 'Associate Software Engineer Trainee',
-    company: 'Techversant infotech, Trivandrum',
-    duration: 'Ongoing',
-    description:
-      'Contributing to the BIS Safety software project as a Full-Stack Web Developer.',
-    technologies: ['React', 'Bootstrap', 'Angular JS', 'ColdFusion'],
-  },
-  {
-    title: 'Self Projects & Learning Experience',
-    company: 'Independent',
-    duration: 'Ongoing',
-    description:
-      'Built multiple hands‑on projects to explore React, Tailwind, APIs, and basic backend concepts.',
-    technologies: ['React', 'Tailwind CSS', 'ColdFusion'],
-  },
-  {
-    title: 'Frontend Practice & UI Clones',
-    company: 'Personal Practice',
-    duration: 'Recent Months',
-    description:
-      'Cloned popular UI layouts and dashboards to improve layout skills, responsiveness, and attention to detail.',
-    technologies: ['HTML', 'CSS', 'JavaScript'],
-  },
-];
 
 export function About() {
   return (
@@ -95,7 +65,7 @@ export function About() {
           </div>
           <div className="mt-8 space-y-5 md:mt-0">
             <div className="relative mx-auto h-52 w-52 overflow-hidden rounded-3xl border border-accentMuted/70 bg-gradient-to-tr from-accentMuted/40 via-backgroundSoft to-background shadow-[0_0_40px_rgba(56,189,248,0.35)]">
-              <div className="absolute inset-0 flex items-center justify-center">
+              <div className="absolute inset-0 flex items-center justify-center bg-black/60">
                 <img src={homeImg} alt="" className='absolute top-0' />
               </div>
             </div>
@@ -111,87 +81,7 @@ export function About() {
             </div>
           </div>
         </motion.div>
-        <motion.div
-          className="space-y-6"
-          variants={sectionVariants}
-          initial="hidden"
-          animate="visible"
-        >
-          <div className="space-y-2">
-            <p className="text-xs font-semibold uppercase tracking-[0.3em] text-accent">
-              Experience
-            </p>
-            <h2 className="text-2xl font-semibold tracking-tight text-textPrimary sm:text-3xl">
-              How I&apos;ve been growing as a developer.
-            </h2>
-            <p className="text-sm text-textMuted sm:text-base">
-              I bring 2 years of hands-on experience in full-stack web development, delivering real-world projects with modern technologies.
-            </p>
-          </div>
-
-          <ol className="relative border-l border-accentMuted/60 pl-5">
-            {experiences.map((exp, index) => (
-              <li key={exp.title} className="mb-8 last:mb-10">
-                <motion.div
-                  className="relative ml-2 rounded-xl border border-stone-300/20 bg-blue-500/10 hover:bg-blue-500/20 p-4 shadow-sm shadow-black/30 backdrop-blur"
-                  initial={{ opacity: 0, y: 12 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true, amount: 0.3 }}
-                  transition={{ delay: index * 0.08, duration: 0.35, ease: 'easeOut' }}
-                >
-                  <span className="absolute -left-7 top-3 h-3 w-3 rounded-full border border-accent bg-background" />
-                  <h3 className="text-sm font-semibold text-textPrimary">
-                    {exp.title}
-                  </h3>
-                  <p className="mt-0.5 text-xs text-textMuted/80">
-                    {exp.company} • {exp.duration}
-                  </p>
-                  <p className="mt-2 text-sm text-textMuted">{exp.description}</p>
-                  <div className="mt-3 flex flex-wrap gap-1">
-                    {exp.technologies.map((tech) => (
-                      <span
-                        key={tech}
-                        className="rounded-full bg-accentMuted/40 px-2 py-0.5 text-[0.7rem] font-medium uppercase tracking-[0.18em] text-accent"
-                      >
-                        {tech}
-                      </span>
-                    ))}
-                  </div>
-                </motion.div>
-              </li>
-            ))}
-          </ol>
-        </motion.div>
-        <motion.div
-          className="space-y-6"
-          variants={sectionVariants}
-          initial="hidden"
-          animate="visible"
-        >
-          <div className="space-y-2">
-            <p className="text-xs font-semibold uppercase tracking-[0.3em] text-accent">
-              Skills
-            </p>
-            <h2 className="text-2xl font-semibold tracking-tight text-textPrimary sm:text-3xl">
-              Technologies I work with.
-            </h2>
-            <p className="text-sm text-textMuted sm:text-base">
-              A mix of frontend, backend, database, and tooling skills I&apos;ve used
-              while building projects and learning the craft.
-            </p>
-          </div>
-          <div className="grid gap-4 sm:grid-cols-2 md:grid-cols-3">
-            {skills.map((skill, index) => (
-              <SkillCard
-                key={skill.name}
-                name={skill.name}
-                level={skill.level}
-                category={skill.category}
-                index={index}
-              />
-            ))}
-          </div>
-        </motion.div>
+        
       </section>
     </>
   );

@@ -53,7 +53,8 @@ const ParticleCard = ({
   glowColor = DEFAULT_GLOW_COLOR,
   enableTilt = true,
   clickEffect = false,
-  enableMagnetism = false
+  enableMagnetism = false,
+  forwardedRef
 }) => {
   const cardRef = useRef(null);
   const particlesRef = useRef([]);
@@ -62,6 +63,14 @@ const ParticleCard = ({
   const memoizedParticles = useRef([]);
   const particlesInitialized = useRef(false);
   const magnetismAnimationRef = useRef(null);
+
+  const setRefs = useCallback(
+    node => {
+      cardRef.current = node;
+      if (typeof forwardedRef === 'function') forwardedRef(node);
+    },
+    [forwardedRef]
+  );
 
   const initializeParticles = useCallback(() => {
     if (particlesInitialized.current || !cardRef.current) return;
@@ -271,7 +280,7 @@ const ParticleCard = ({
 
   return (
     <div
-      ref={cardRef}
+      ref={setRefs}
       className={`${className} relative overflow-hidden`}
       style={{ ...style, position: 'relative', overflow: 'hidden' }}>
       {children}
@@ -436,17 +445,22 @@ const useMobileDetection = () => {
 };
 
 const MagicBento = ({
-  textAutoHide = true,
-  enableStars = true,
   enableSpotlight = true,
-  enableBorderGlow = true,
   disableAnimations = false,
   spotlightRadius = DEFAULT_SPOTLIGHT_RADIUS,
   particleCount = DEFAULT_PARTICLE_COUNT,
   enableTilt = false,
   glowColor = DEFAULT_GLOW_COLOR,
   clickEffect = true,
-  enableMagnetism = true
+  enableMagnetism = true,
+  // Contact form control (optional)
+  contactForm,
+  contactErrors,
+  contactStatus,
+  contactStatusMessage,
+  onContactChange,
+  onContactSubmit,
+  contactCardRef
 }) => {
   const gridRef = useRef(null);
   const isMobile = useMobileDetection();
@@ -578,7 +592,7 @@ const MagicBento = ({
           glowColor={glowColor} />
       )}
       <BentoCardGrid gridRef={gridRef}>
-        <div className="card-responsive grid gap-4">
+        <div className="card-responsive grid gap-4 p-0" style={{ width: '100%', padding: '0px'}}>
 
           {/* LEFT – CONTACT FORM (BIG CARD) */}
           <ParticleCard
@@ -593,6 +607,8 @@ const MagicBento = ({
             glowColor={glowColor}
             enableTilt={enableTilt}
             enableMagnetism={enableMagnetism}
+            clickEffect={clickEffect}
+            forwardedRef={contactCardRef}
           >
             <div>
               <p className="text-xs tracking-widest opacity-70">CONTACT</p>
@@ -604,40 +620,88 @@ const MagicBento = ({
               </p>
             </div>
 
-            <form className="flex flex-col gap-4 mt-4">
+            <form className="flex flex-col gap-4 mt-4" onSubmit={onContactSubmit ?? (e => e.preventDefault())}>
+              {/* Honeypot (anti-spam) */}
+              <input
+                type="text"
+                name="website"
+                value={contactForm?.website ?? ''}
+                onChange={onContactChange}
+                tabIndex={-1}
+                autoComplete="off"
+                className="hidden"
+              />
               <div>
                 <label className="text-xs opacity-70">NAME</label>
                 <input
                   type="text"
+                  name="name"
+                  value={contactForm?.name ?? ''}
+                  onChange={onContactChange}
+                  disabled={contactStatus === 'sending'}
                   placeholder="Your name"
-                  className="w-full mt-1 rounded-lg bg-transparent border border-[#392e4e] px-4 py-2 outline-none focus:border-purple-500"
+                  aria-invalid={Boolean(contactErrors?.name) || undefined}
+                  className="w-full mt-1 rounded-lg bg-transparent border border-[#392e4e] px-4 py-2 outline-none focus:border-purple-500 disabled:opacity-60"
                 />
+                {contactErrors?.name && (
+                  <p className="mt-1 text-xs text-red-400">{contactErrors.name}</p>
+                )}
               </div>
 
               <div>
                 <label className="text-xs opacity-70">EMAIL</label>
                 <input
                   type="email"
+                  name="email"
+                  value={contactForm?.email ?? ''}
+                  onChange={onContactChange}
+                  disabled={contactStatus === 'sending'}
                   placeholder="you@example.com"
-                  className="w-full mt-1 rounded-lg bg-transparent border border-[#392e4e] px-4 py-2 outline-none focus:border-purple-500"
+                  aria-invalid={Boolean(contactErrors?.email) || undefined}
+                  className="w-full mt-1 rounded-lg bg-transparent border border-[#392e4e] px-4 py-2 outline-none focus:border-purple-500 disabled:opacity-60"
                 />
+                {contactErrors?.email && (
+                  <p className="mt-1 text-xs text-red-400">{contactErrors.email}</p>
+                )}
               </div>
 
               <div>
                 <label className="text-xs opacity-70">MESSAGE</label>
                 <textarea
                   rows={4}
+                  name="message"
+                  value={contactForm?.message ?? ''}
+                  onChange={onContactChange}
+                  disabled={contactStatus === 'sending'}
                   placeholder="Tell me about the role, project, or idea..."
-                  className="w-full mt-1 rounded-lg bg-transparent border border-[#392e4e] px-4 py-2 outline-none focus:border-purple-500 resize-none"
+                  aria-invalid={Boolean(contactErrors?.message) || undefined}
+                  className="w-full mt-1 rounded-lg bg-transparent border border-[#392e4e] px-4 py-2 outline-none focus:border-purple-500 resize-none disabled:opacity-60"
                 />
+                {contactErrors?.message && (
+                  <p className="mt-1 text-xs text-red-400">{contactErrors.message}</p>
+                )}
               </div>
 
               <button
                 type="submit"
-                className="mt-2 rounded-lg bg-white text-black py-2 font-medium hover:opacity-90 transition"
+                disabled={contactStatus === 'sending'}
+                className="mt-2 rounded-lg bg-white text-black py-2 font-medium hover:opacity-90 transition disabled:opacity-60 cursor-pointer"
               >
-                Send Message
+                {contactStatus === 'sending'
+                  ? 'Sending…'
+                  : contactStatus === 'sent'
+                    ? 'Sent!'
+                    : 'Send Mail'}
               </button>
+              {contactStatusMessage && (
+                <p
+                  className={`text-xs ${
+                    contactStatus === 'failed' ? 'text-red-400' : 'text-emerald-300'
+                  }`}
+                >
+                  {contactStatusMessage}
+                </p>
+              )}
             </form>
           </ParticleCard>
 

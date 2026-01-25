@@ -85,7 +85,7 @@ export default function DarkVeil({
   const ref = useRef(null);
   useEffect(() => {
     const canvas = ref.current;
-    const parent = canvas.parentElement;
+    if (!canvas) return;
 
     const renderer = new Renderer({
       dpr: Math.min(window.devicePixelRatio, 2),
@@ -93,6 +93,8 @@ export default function DarkVeil({
     });
 
     const gl = renderer.gl;
+    if (!gl) return;
+
     const geometry = new Triangle(gl);
 
     const program = new Program(gl, {
@@ -112,35 +114,58 @@ export default function DarkVeil({
     const mesh = new Mesh(gl, { geometry, program });
 
     const resize = () => {
-      const w = parent.clientWidth,
-        h = parent.clientHeight;
+      // Use viewport dimensions for fixed positioning
+      const w = window.innerWidth;
+      const h = window.innerHeight;
       renderer.setSize(w * resolutionScale, h * resolutionScale);
       program.uniforms.uResolution.value.set(w, h);
     };
 
-    window.addEventListener('resize', resize);
+    window.addEventListener('resize', resize, { passive: true });
     resize();
 
     const start = performance.now();
     let frame = 0;
 
     const loop = () => {
+      if (!renderer || !program || !mesh) return;
+      
       program.uniforms.uTime.value = ((performance.now() - start) / 1000) * speed;
       program.uniforms.uHueShift.value = hueShift;
       program.uniforms.uNoise.value = noiseIntensity;
       program.uniforms.uScan.value = scanlineIntensity;
       program.uniforms.uScanFreq.value = scanlineFrequency;
       program.uniforms.uWarp.value = warpAmount;
-      renderer.render({ scene: mesh });
+      
+      try {
+        renderer.render({ scene: mesh });
+      } catch (error) {
+        console.error('DarkVeil render error:', error);
+        return;
+      }
+      
       frame = requestAnimationFrame(loop);
     };
 
-    loop();
+    frame = requestAnimationFrame(loop);
 
     return () => {
-      cancelAnimationFrame(frame);
+      if (frame) {
+        cancelAnimationFrame(frame);
+      }
       window.removeEventListener('resize', resize);
     };
   }, [hueShift, noiseIntensity, scanlineIntensity, speed, scanlineFrequency, warpAmount, resolutionScale]);
-  return <canvas ref={ref} className="w-full h-full block" />;
+  
+  return (
+    <canvas 
+      ref={ref} 
+      className="fixed inset-0 w-screen h-screen block pointer-events-none"
+      style={{ 
+        width: '100vw', 
+        height: '100vh',
+        zIndex: 1
+      }} 
+    />
+  );
 }

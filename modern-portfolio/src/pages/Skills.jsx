@@ -13,7 +13,7 @@ const sectionVariants = {
 
 export function Skills() {
   return (
-    <section className="mx-auto max-w-5xl px-4 py-10 sm:px-6 sm:py-12">
+    <section className="mx-auto max-w-5xl px-4 py-10 sm:px-6 sm:py-12" style={{ width: '100%' }}>
       <motion.div
         className="space-y-6"
         variants={sectionVariants}

@@ -1,47 +1,86 @@
-import { useState } from 'react';
-import { Link, NavLink } from 'react-router-dom';
+import { useState, useEffect } from 'react';
 import { FiMenu, FiX, FiDownload } from 'react-icons/fi';
 import logo from "@/assets/images/Logo.png";
 import resumePdf from "@/assets/AnujithSResume.pdf";
 
 const navItems = [
-  { label: 'Home', to: '/' },
-  { label: 'About', to: '/about' },
-  { label: 'Projects', to: '/projects' },
-  { label: 'Contact', to: '/contact' },
+  { label: 'Home', to: '#home' },
+  { label: 'About', to: '#about' },
+  { label: 'Projects', to: '#projects' },
+  { label: 'Contact', to: '#contact' },
 ];
 
 const linkBaseClasses =
-  'text-sm font-medium tracking-wide transition-colors duration-200 mx-3';
+  'text-sm font-medium tracking-wide transition-colors duration-200 mx-3 cursor-pointer';
 
 const activeClasses = 'text-white border-b border-white';
 const inactiveClasses = 'text-indigo-200 hover:text-white hover:bg-backgroundSoft';
 
+const scrollToSection = (e, sectionId) => {
+  e.preventDefault();
+  const element = document.querySelector(sectionId);
+  if (element) {
+    const offset = 100; // Account for fixed navbar
+    const elementPosition = element.getBoundingClientRect().top;
+    const offsetPosition = elementPosition + window.pageYOffset - offset;
+
+    window.scrollTo({
+      top: offsetPosition,
+      behavior: 'smooth'
+    });
+  }
+};
+
 export function Navbar() {
   const [open, setOpen] = useState(false);
+  const [activeSection, setActiveSection] = useState('home');
+
+  useEffect(() => {
+    const handleScroll = () => {
+      const sections = ['home', 'about', 'skills', 'experience', 'projects', 'contact'];
+      const scrollPosition = window.scrollY + 150; // Offset for navbar
+
+      for (let i = sections.length - 1; i >= 0; i--) {
+        const section = document.getElementById(sections[i]);
+        if (section && section.offsetTop <= scrollPosition) {
+          setActiveSection(sections[i]);
+          break;
+        }
+      }
+    };
+
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
 
   return (
-    <header className="fixed shadow-lg top-3 z-50 border border-stone-300/40 md:bg-gradient-to-b from-black/20 via-white/15 to-black/20 backdrop-blur-xs bg-black/30 rounded-4xl">
+    <header className="shadow-lg border border-stone-300/40  backdrop-blur-xl  rounded-4xl">
       <nav className="mx-auto flex max-w-5xl items-center justify-between px-4 py-3 sm:px-6 gap-3 md:gap-0">
-        <Link to="/" className="flex items-center gap-2">
+        <a 
+          href="#home" 
+          className="flex items-center gap-2"
+          onClick={(e) => scrollToSection(e, '#home')}
+        >
           <img src={logo} alt="" style={{width:'100px'}} />
-        </Link>
+        </a>
 
         <div className="hidden items-center gap-6 md:flex">
           <ul className="flex items-center gap-1">
-            {navItems.map((item) => (
-              <li key={item.to}>
-                <NavLink
-                  to={item.to}
-                  className={({ isActive }) =>
-                    `${linkBaseClasses} ${isActive ? activeClasses : inactiveClasses}`
-                  }
-                  end={item.to === '/'}
-                >
-                  {item.label}
-                </NavLink>
-              </li>
-            ))}
+            {navItems.map((item) => {
+              const sectionId = item.to.replace('#', '');
+              const isActive = activeSection === sectionId;
+              return (
+                <li key={item.to}>
+                  <a
+                    href={item.to}
+                    onClick={(e) => scrollToSection(e, item.to)}
+                    className={`${linkBaseClasses} ${isActive ? activeClasses : inactiveClasses}`}
+                  >
+                    {item.label}
+                  </a>
+                </li>
+              );
+            })}
           </ul>
           <a
             href={resumePdf}
@@ -66,22 +105,24 @@ export function Navbar() {
       {open && (
         <div className="border-t border-accentMuted/40 bg-backgroundSoft/95 px-4 py-3 md:hidden">
           <ul className="space-y-1">
-            {navItems.map((item) => (
-              <li key={item.to}>
-                <NavLink
-                  to={item.to}
-                  className={({ isActive }) =>
-                    `${linkBaseClasses} block ${
-                      isActive ? activeClasses : inactiveClasses
-                    }`
-                  }
-                  onClick={() => setOpen(false)}
-                  end={item.to === '/'}
-                >
-                  {item.label}
-                </NavLink>
-              </li>
-            ))}
+            {navItems.map((item) => {
+              const sectionId = item.to.replace('#', '');
+              const isActive = activeSection === sectionId;
+              return (
+                <li key={item.to}>
+                  <a
+                    href={item.to}
+                    onClick={(e) => {
+                      scrollToSection(e, item.to);
+                      setOpen(false);
+                    }}
+                    className={`${linkBaseClasses} block ${isActive ? activeClasses : inactiveClasses}`}
+                  >
+                    {item.label}
+                  </a>
+                </li>
+              );
+            })}
           </ul>
           <a
             href={resumePdf}
